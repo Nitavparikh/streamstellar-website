@@ -98,10 +98,7 @@ export function Navbar() {
               </div>
             </div>
 
-            <a href="#pipeline" className="nav-link">Pipeline</a>
-            <a href="#specs" className="nav-link">Technology</a>
             <a href="/viewer" className="nav-link">Viewer</a>
-            <a href="#contact" className="nav-link">Inquire</a>
           </nav>
 
           <div className="nav-actions" style={{ display: "block" }}>
@@ -127,10 +124,7 @@ export function Navbar() {
         aria-hidden={!menuOpen}
       >
         <a href="#services" className="nav-link" onClick={() => setMenuOpen(false)}>Services</a>
-        <a href="#pipeline" className="nav-link" onClick={() => setMenuOpen(false)}>Pipeline</a>
-        <a href="#specs" className="nav-link" onClick={() => setMenuOpen(false)}>Technology</a>
         <a href="/viewer" className="nav-link" onClick={() => setMenuOpen(false)}>Viewer</a>
-        <a href="#contact" className="nav-link" onClick={() => setMenuOpen(false)}>Inquire</a>
         <a href="#contact" className="btn-primary btn-full" onClick={() => setMenuOpen(false)}>Get Started</a>
       </div>
     </header>

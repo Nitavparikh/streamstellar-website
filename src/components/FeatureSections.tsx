@@ -259,22 +259,22 @@ export function FeatureSections() {
 
         <div className="bento-grid">
           
-          {/* Card 1: Product Visualizations (large) */}
+          {/* Card 1: Lifestyle Rendering (large) */}
           <div className="bento-card bento-card--large">
             <div className="card-visual relative" style={{ minHeight: "260px" }}>
               <ImageSlider 
-                leftImage="/slider_watch_cad.png" 
-                rightImage="/slider_watch_render.png" 
-                leftLabel="CAD MODEL" 
-                rightLabel="REALISTIC RENDER" 
+                leftImage="/slider_chair_silo.png" 
+                rightImage="/slider_chair_lifestyle.png" 
+                leftLabel="STUDIO SILO" 
+                rightLabel="LIFESTYLE SCENE" 
               />
               <div className="visual-badge" style={{ zIndex: 10 }}>Interactive Slider</div>
             </div>
             <div className="card-info">
               <span className="card-num">01</span>
-              <h3 className="card-title">Product Visualizations</h3>
+              <h3 className="card-title">Lifestyle Rendering</h3>
               <p className="card-desc">
-                Transition raw CAD engineering models directly into photo-realistic 3D product renders. Slide to compare the wireframe design against the final physical material output.
+                Superimpose products from a simple white studio background (silo) directly into warm, realistic living spaces or rich environments.
               </p>
             </div>
           </div>
@@ -365,22 +365,21 @@ export function FeatureSections() {
             </div>
           </div>
 
-          {/* Card 5: Lifestyle Rendering (medium) */}
+          {/* Card 5: Product Visualizations (medium) */}
           <div className="bento-card bento-card--medium">
             <div className="card-visual relative" style={{ minHeight: "260px" }}>
-              <ImageSlider 
-                leftImage="/slider_chair_silo.png" 
-                rightImage="/slider_chair_lifestyle.png" 
-                leftLabel="STUDIO SILO" 
-                rightLabel="LIFESTYLE SCENE" 
+              <img
+                src="/slider_watch_render.png"
+                alt="Product visualization render"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               />
-              <div className="visual-badge" style={{ zIndex: 10 }}>Interactive Slider</div>
+              <div className="visual-badge" style={{ zIndex: 10 }}>Realistic Render</div>
             </div>
             <div className="card-info">
               <span className="card-num">05</span>
-              <h3 className="card-title">Lifestyle Rendering</h3>
+              <h3 className="card-title">Product Visualizations</h3>
               <p className="card-desc">
-                Superimpose products from a simple white studio background (silo) directly into warm, realistic living spaces or rich environments.
+                Transition raw CAD engineering models directly into photo-realistic 3D product renders. Compare designs against final physical material output.
               </p>
             </div>
           </div>
@@ -388,14 +387,13 @@ export function FeatureSections() {
           {/* Card 6: Product Animation (large) */}
           <div className="bento-card bento-card--large">
             <div className="card-visual relative" style={{ minHeight: "220px" }}>
-              <Image
-                src="/animation_thumbnail.png"
-                alt="3D mechanical exploded view video frame thumbnail"
-                fill
-                className="object-cover opacity-80"
-                priority
+              <ImageSlider 
+                leftImage="/slider_watch_cad.png" 
+                rightImage="/slider_watch_render.png" 
+                leftLabel="CAD MODEL" 
+                rightLabel="REALISTIC RENDER" 
               />
-              <div className="visual-badge" style={{ zIndex: 10 }}>Animation Thumbnail</div>
+              <div className="visual-badge" style={{ zIndex: 10 }}>Interactive Slider</div>
             </div>
             <div className="card-info">
               <span className="card-num">06</span>

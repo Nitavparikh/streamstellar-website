@@ -6,8 +6,8 @@ type LogoProps = {
 };
 
 export function Logo({ className = "", variant = "nav" }: LogoProps) {
-  const size = variant === "nav" ? 28 : 22;
-  const textSize = variant === "nav" ? "text-[18px]" : "text-[15px]";
+  const size = variant === "nav" ? 36 : 22;
+  const textSize = variant === "nav" ? "text-[23px]" : "text-[15px]";
 
   return (
     <div className={`flex items-center gap-2.5 select-none ${className}`}>

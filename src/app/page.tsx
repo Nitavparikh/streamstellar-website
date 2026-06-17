@@ -6,6 +6,7 @@ import { Hero } from "@/components/Hero";
 import { IntegrateSection } from "@/components/IntegrateSection";
 import { LogoCloud } from "@/components/LogoCloud";
 import { Navbar } from "@/components/Navbar";
+import { ViewerPreviewSection } from "@/components/ViewerPreviewSection";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <LogoCloud />
         <IntegrateSection />
         <FeatureSections />
+        <ViewerPreviewSection />
         <Deliverability />
         <FinalCta />
       </main>
