@@ -25,10 +25,7 @@ export function ViewerPreviewSection() {
               Want to roam around your digital twins and see how they look?
             </h2>
             <p className="section-body text-zinc-400 mb-8" style={{ fontSize: "16px", lineHeight: "1.7", maxWidth: "550px" }}>
-              We have created a web-native <strong>3D File Viewer</strong>, so that anyone can preview, rotate, and interact with their GLB or gLTF assets for free. Experiment with material overrides, play with real-time lighting shaders, and test responsiveness instantly. 
-            </p>
-            <p className="section-body text-zinc-400 mb-8" style={{ fontSize: "15px", lineHeight: "1.7", maxWidth: "550px" }}>
-              Try it directly in the interactive sandbox window. Drag to rotate, test presets, and when you are ready, launch the full editor page to upload and inspect your own files.
+              Your digital twins deserve better than a grey background. Explore assets with realistic lighting, material accuracy, and interactive controls designed to bring products to life.
             </p>
             
             <div className="flex flex-wrap gap-4">
@@ -37,9 +34,6 @@ export function ViewerPreviewSection() {
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                 </svg>
-              </a>
-              <a href="/viewer" className="btn-secondary">
-                Upload your GLB
               </a>
             </div>
           </div>

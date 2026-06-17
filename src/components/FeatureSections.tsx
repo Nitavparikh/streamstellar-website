@@ -377,7 +377,7 @@ export function FeatureSections() {
             </div>
             <div className="card-info">
               <span className="card-num">05</span>
-              <h3 className="card-title">Product Visualizations</h3>
+              <h3 className="card-title">Product Visualization</h3>
               <p className="card-desc">
                 Transition raw CAD engineering models directly into photo-realistic 3D product renders. Compare designs against final physical material output.
               </p>

@@ -297,7 +297,13 @@ input, textarea {
   border-radius: 9999px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease), top var(--duration) var(--ease);
+  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease), top var(--duration) var(--ease), height var(--duration) var(--ease);
+}
+
+@media (min-width: 768px) {
+  .nav-bar {
+    height: 64px;
+  }
 }
 
 .nav-bar.scrolled {
@@ -318,6 +324,61 @@ input, textarea {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* Logo Crop System (Custom Bounding Box Offset Cancellation) */
+.logo-crop-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.logo-crop-img {
+  position: absolute;
+  max-height: none !important;
+  max-width: none !important;
+  mix-blend-mode: screen;
+}
+
+/* Navbar Logo Size (Custom Dimensions based on 686x151 content) */
+.nav-logo-container {
+  height: 40px;
+  width: 182px;
+}
+
+.nav-logo-img {
+  height: 136px;
+  width: 271px;
+  top: -35px;
+  left: -59px;
+}
+
+@media (min-width: 768px) {
+  .nav-logo-container {
+    height: 52px;
+    width: 236px;
+  }
+  
+  .nav-logo-img {
+    height: 177px;
+    width: 353px;
+    top: -45px;
+    left: -77px;
+  }
+}
+
+/* Footer Logo Size */
+.footer-logo-container {
+  height: 32px;
+  width: 145px;
+}
+
+.footer-logo-img {
+  height: 109px;
+  width: 217px;
+  top: -28px;
+  left: -47px;
 }
 
 .logo-mark {

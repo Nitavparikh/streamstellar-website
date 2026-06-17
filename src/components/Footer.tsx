@@ -7,8 +7,12 @@ export function Footer() {
     <footer className="footer">
       <div className="section-inner footer-inner">
         <div className="footer-brand">
-          <a href="/" className="nav-logo" aria-label="StreamStellar">
-            <Logo variant="footer" />
+          <a href="/" className="logo-crop-container footer-logo-container" aria-label="StreamStellar">
+            <img
+              src="/streamstellar-logo.png"
+              alt="StreamStellar Logo"
+              className="logo-crop-img footer-logo-img"
+            />
           </a>
           <p className="footer-tagline">High-performance 3D asset engineering.</p>
         </div>

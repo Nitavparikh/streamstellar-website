@@ -18,8 +18,12 @@ export function Navbar() {
   return (
     <header className={`nav-bar ${scrolled ? "scrolled" : ""}`} id="nav">
       <div className="nav-inner">
-        <a href="/" className="nav-logo" aria-label="StreamStellar">
-          <Logo variant="nav" />
+        <a href="/" className="logo-crop-container nav-logo-container" aria-label="StreamStellar">
+          <img
+            src="/streamstellar-logo.png"
+            alt="StreamStellar Logo"
+            className="logo-crop-img nav-logo-img"
+          />
         </a>
 
         <div className="hidden md:flex items-center gap-2">
