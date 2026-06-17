@@ -2,12 +2,12 @@
 
 const specs = [
   {
-    metric: "WebGL 2.0",
-    label: "Native browser rendering — zero plugins or apps required.",
+    metric: "WebGL 2.0 & WebGPU",
+    label: "Adding WebGPU support. Native browser rendering — zero plugins or apps required.",
   },
   {
-    metric: "< 1.8 MB",
-    label: "Average file size per model, optimized with Draco compression.",
+    metric: "1.8 MB – < 5 MB",
+    label: "Optimized model sizing (typically 1.8 MB to < 5 MB, always less than 10MB) using streamstellar compression.",
   },
   {
     metric: "WebXR",
@@ -28,7 +28,7 @@ export function Deliverability() {
             <span className="eyebrow">Technical Architecture</span>
             <h2 className="specs-title">Engineered for Performance</h2>
             <p className="specs-desc">
-              StreamStellar assets are designed to run smoothly at 60 FPS on standard mobile and desktop configurations.
+              StreamStellar assets are designed to run smoothly at 60 FPS on standard mobile and desktop configurations. Built using industry-standard 3D workflows and open ecosystem technologies. Members of Metaverse Standards.
             </p>
           </div>
           <div className="specs-grid">

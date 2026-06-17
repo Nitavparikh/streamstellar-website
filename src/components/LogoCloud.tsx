@@ -55,7 +55,7 @@ export function LogoCloud() {
       <div className="section-inner">
         <div className="section-header-centered" style={{ marginBottom: "56px" }}>
           <span className="eyebrow">Compatibility</span>
-          <h2 className="section-heading">Create once. Deploy everywhere.</h2>
+          <h2 className="section-heading">Create a digital twin once. Deploy everywhere.</h2>
           <p className="section-body">
             Our 3D models are optimized to be compatible with various platforms and built for modern commerce.
           </p>

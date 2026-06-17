@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Center,
   Environment,
@@ -77,19 +77,20 @@ function Loader() {
 }
 
 function ModelMesh({
-  modelPath,
+  clonedScene,
+  animations,
   scale,
   autoRotateSpeed,
   material,
 }: {
-  modelPath: string;
+  clonedScene: Group;
+  animations: any;
   scale: number;
   autoRotateSpeed: number;
   material: "original" | "glass" | "iridescent";
 }) {
   const outerRef = useRef<Group>(null);
   const modelRef = useRef<Group>(null);
-  const { scene, animations } = useGLTF(modelPath);
   const { actions, names } = useAnimations(animations, modelRef);
 
   useEffect(() => {
@@ -106,7 +107,7 @@ function ModelMesh({
   }, [actions, names]);
 
   useEffect(() => {
-    scene.traverse((child: any) => {
+    clonedScene.traverse((child: any) => {
       if (child.isMesh) {
         if (!child.userData.originalMaterial) {
           child.userData.originalMaterial = child.material;
@@ -120,7 +121,7 @@ function ModelMesh({
         }
       }
     });
-  }, [scene, material]);
+  }, [clonedScene, material]);
 
   useFrame((_, delta) => {
     if (outerRef.current && autoRotateSpeed > 0) {
@@ -132,7 +133,7 @@ function ModelMesh({
     <group ref={outerRef} scale={scale}>
       <Center>
         <group ref={modelRef}>
-          <primitive object={scene} />
+          <primitive object={clonedScene} />
         </group>
       </Center>
     </group>
@@ -188,21 +189,29 @@ function ScaledModel({
   geometry: "original" | "torus" | "sphere";
   material: "original" | "glass" | "iridescent";
 }) {
-  const { scene } = useGLTF(modelPath);
-  const [scale, setScale] = useState(1);
+  const { scene, animations } = useGLTF(modelPath);
 
-  useLayoutEffect(() => {
-    const box = new Box3().setFromObject(scene);
+  // Compute scale based on a clean, cloned scene to ensure no dirty matrices or parent transformations affect it.
+  const scale = useMemo(() => {
+    const clone = scene.clone();
+    const box = new Box3().setFromObject(clone);
     const size = box.getSize(new Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    if (maxDim > 0) setScale(targetSize / maxDim);
+    return maxDim > 0 ? targetSize / maxDim : 1;
   }, [scene, targetSize]);
+
+  // Clone the scene for rendering and material manipulation to keep the cached scene pristine
+  const clonedScene = useMemo(() => {
+    return scene.clone();
+  }, [scene]);
 
   return (
     <>
       {geometry === "original" ? (
         <ModelMesh
-          modelPath={modelPath}
+          key={modelPath}
+          clonedScene={clonedScene}
+          animations={animations}
           scale={scale}
           autoRotateSpeed={autoRotateSpeed}
           material={material}
@@ -216,6 +225,29 @@ function ScaledModel({
       )}
     </>
   );
+}
+
+function CameraController({
+  modelPath,
+  controlsRef,
+}: {
+  modelPath: string;
+  controlsRef: React.RefObject<any>;
+}) {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    // Reset camera position and target
+    camera.position.set(0, 0.15, 5.2);
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+
+    if (controlsRef.current) {
+      controlsRef.current.reset();
+    }
+  }, [modelPath, camera, controlsRef]);
+
+  return null;
 }
 
 type ProductViewerProps = {
@@ -238,6 +270,14 @@ export function ProductViewer({
   lighting = "studio",
 }: ProductViewerProps) {
   const lights = lightPresets[lighting] || lightPresets.studio;
+  const activeModelPath =
+    geometry === "torus"
+      ? "/models/canvas_shoe.glb"
+      : geometry === "sphere"
+      ? "/models/modern_arm_chair.glb"
+      : modelPath;
+
+  const controlsRef = useRef<any>(null);
 
   return (
     <div className={`relative ${className}`}>
@@ -255,16 +295,19 @@ export function ProductViewer({
 
         <Suspense fallback={<Loader />}>
           <ScaledModel
-            modelPath={modelPath}
+            modelPath={activeModelPath}
             autoRotateSpeed={autoRotateSpeed}
             targetSize={targetSize}
-            geometry={geometry}
+            geometry="original"
             material={material}
           />
           <Environment files="/pav_studio_03_1k.hdr" environmentIntensity={0.35} background={false} />
         </Suspense>
 
+        <CameraController modelPath={activeModelPath} controlsRef={controlsRef} />
+
         <OrbitControls
+          ref={controlsRef}
           enableZoom={false}
           enablePan={false}
           enableDamping

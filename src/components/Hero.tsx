@@ -10,8 +10,8 @@ export function Hero() {
 
   const polyCounts = {
     original: "48,200",
-    torus: "28,800",
-    sphere: "9,216",
+    torus: "114,600",
+    sphere: "72,400",
   };
 
   return (
@@ -50,21 +50,21 @@ export function Hero() {
                     onClick={() => setGeometry("original")}
                     className={`ctrl-btn ${geometry === "original" ? "active" : ""}`}
                   >
-                    GLTF Model
+                    Cube
                   </button>
                   <button
                     type="button"
                     onClick={() => setGeometry("torus")}
                     className={`ctrl-btn ${geometry === "torus" ? "active" : ""}`}
                   >
-                    Torus Knot
+                    Shoe
                   </button>
                   <button
                     type="button"
                     onClick={() => setGeometry("sphere")}
                     className={`ctrl-btn ${geometry === "sphere" ? "active" : ""}`}
                   >
-                    Sphere
+                    Chair
                   </button>
                 </div>
               </div>
