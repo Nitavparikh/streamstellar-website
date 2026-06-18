@@ -17,36 +17,22 @@ export function FinalCta() {
     }
     setStatus("submitting");
 
-    // FORMSPREE CONFIGURATION
-    // 1. Once you click "Create Form" on Formspree, copy your Form ID (e.g. "mqkvpkyk")
-    // 2. Replace the placeholder value below with your Form ID
-    const FORMSPREE_FORM_ID: string = "d427c5dc-6dae-4a07-853a-6090e981bea1";
-
-    // Simulation mode for local testing if the Form ID is not replaced yet
-    if (FORMSPREE_FORM_ID === "YOUR_FORMSPREE_FORM_ID_HERE") {
-      setTimeout(() => {
-        setStatus("success");
-        console.log("StreamStellar Form Simulation Success:", { name, email, company, message });
-        setName("");
-        setEmail("");
-        setCompany("");
-        setMessage("");
-      }, 1000);
-      return;
-    }
+    // WEB3FORMS CONFIGURATION
+    const WEB3FORMS_ACCESS_KEY: string = "d427c5dc-6dae-4a07-853a-6090e981bea1";
     
     try {
-      const response = await fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
         body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
           name: name,
           email: email,
-          company: company,
-          message: message,
+          subject: `StreamStellar Project Inquiry — ${company}`,
+          message: `Company & Industry: ${company}\n\nProject Brief:\n${message || "No project brief provided."}`,
         }),
       });
 
