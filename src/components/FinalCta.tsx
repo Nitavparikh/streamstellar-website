@@ -16,13 +16,32 @@ export function FinalCta() {
       return;
     }
     setStatus("submitting");
+    
+    // Construct mailto URL to deliver details to partners@streamstellar.com
+    const subject = encodeURIComponent(`StreamStellar Project Inquiry — ${company}`);
+    const body = encodeURIComponent(
+      `Hello StreamStellar Team,\n\n` +
+      `Here are my project details:\n\n` +
+      `• Name: ${name}\n` +
+      `• Work Email: ${email}\n` +
+      `• Company & Industry: ${company}\n\n` +
+      `• Project Brief:\n${message || "No brief provided."}\n\n` +
+      `Best regards,\n` +
+      `${name}`
+    );
+    
     setTimeout(() => {
       setStatus("success");
+      
+      // Trigger the mail client with pre-filled details
+      window.location.href = `mailto:partners@streamstellar.com?subject=${subject}&body=${body}`;
+      
+      // Clear fields
       setName("");
       setEmail("");
       setCompany("");
       setMessage("");
-    }, 1500);
+    }, 1000);
   };
 
   return (
