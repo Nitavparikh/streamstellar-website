@@ -7,41 +7,39 @@ export function FinalCta() {
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "validation-error" | "server-error">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !company) {
-      setStatus("error");
+      setStatus("validation-error");
       return;
     }
     setStatus("submitting");
     
-    // Construct mailto URL to deliver details to partners@streamstellar.com
-    const subject = encodeURIComponent(`StreamStellar Project Inquiry — ${company}`);
-    const body = encodeURIComponent(
-      `Hello StreamStellar Team,\n\n` +
-      `Here are my project details:\n\n` +
-      `• Name: ${name}\n` +
-      `• Work Email: ${email}\n` +
-      `• Company & Industry: ${company}\n\n` +
-      `• Project Brief:\n${message || "No brief provided."}\n\n` +
-      `Best regards,\n` +
-      `${name}`
-    );
-    
-    setTimeout(() => {
-      setStatus("success");
-      
-      // Trigger the mail client with pre-filled details
-      window.location.href = `mailto:partners@streamstellar.com?subject=${subject}&body=${body}`;
-      
-      // Clear fields
-      setName("");
-      setEmail("");
-      setCompany("");
-      setMessage("");
-    }, 1000);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, company, message }),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        // Clear fields
+        setName("");
+        setEmail("");
+        setCompany("");
+        setMessage("");
+      } else {
+        setStatus("server-error");
+      }
+    } catch (err) {
+      console.error("Form submission error:", err);
+      setStatus("server-error");
+    }
   };
 
   return (
@@ -128,9 +126,14 @@ export function FinalCta() {
                   ✓ Your project inquiry was received. We will be in touch!
                 </span>
               )}
-              {status === "error" && (
+              {status === "validation-error" && (
                 <span className="text-red" style={{ color: "var(--red)" }}>
                   ⚠ Please fill out all required fields.
+                </span>
+              )}
+              {status === "server-error" && (
+                <span className="text-red" style={{ color: "var(--red)" }}>
+                  ⚠ Submission failed. Please try again or email us directly at partners@streamstellar.com.
                 </span>
               )}
             </div>
