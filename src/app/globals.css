@@ -337,28 +337,28 @@ input, textarea {
 
 /* Navbar Logo Size (Custom Dimensions based on 686x151 content) */
 .nav-logo-container {
-  height: 28px;
-  width: 127px;
+  height: 23px;
+  width: 104px;
 }
 
 .nav-logo-img {
-  height: 95px;
-  width: 190px;
-  top: -24px;
-  left: -41px;
+  height: 78px;
+  width: 156px;
+  top: -20px;
+  left: -34px;
 }
 
 @media (min-width: 768px) {
   .nav-logo-container {
-    height: 36px;
-    width: 164px;
+    height: 29px;
+    width: 132px;
   }
   
   .nav-logo-img {
-    height: 123px;
-    width: 244px;
-    top: -31px;
-    left: -53px;
+    height: 99px;
+    width: 197px;
+    top: -25px;
+    left: -43px;
   }
 }
 
