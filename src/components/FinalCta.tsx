@@ -16,14 +16,39 @@ export function FinalCta() {
       return;
     }
     setStatus("submitting");
+
+    // WEB3FORMS CONFIGURATION
+    // 1. Go to https://web3forms.com/ to get your free access key sent to partners@streamstellar.com
+    // 2. Replace the placeholder value below with your actual access key
+    const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+
+    // Simulation mode for local testing if the key is not replaced yet
+    if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
+      setTimeout(() => {
+        setStatus("success");
+        console.log("StreamStellar Form Simulation Success:", { name, email, company, message });
+        setName("");
+        setEmail("");
+        setCompany("");
+        setMessage("");
+      }, 1000);
+      return;
+    }
     
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify({ name, email, company, message }),
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name: name,
+          email: email,
+          subject: `StreamStellar Project Inquiry — ${company}`,
+          message: `Company & Industry: ${company}\n\nProject Brief:\n${message || "No project brief provided."}`,
+        }),
       });
 
       if (response.ok) {
