@@ -258,17 +258,15 @@ export function FeatureSections() {
         </div>
 
         <div className="bento-grid">
-          
           {/* Card 1: Lifestyle Rendering (large) */}
           <div className="bento-card bento-card--large">
             <div className="card-visual relative" style={{ minHeight: "260px" }}>
-              <ImageSlider 
-                leftImage="/slider_chair_silo.png" 
-                rightImage="/slider_chair_lifestyle.png" 
-                leftLabel="STUDIO SILO" 
-                rightLabel="LIFESTYLE SCENE" 
+              <img
+                src="/Lifestyle images/Lifestyle image 01.jpg"
+                alt="Lifestyle rendering scene"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               />
-              <div className="visual-badge" style={{ zIndex: 10 }}>Interactive Slider</div>
+              <div className="visual-badge" style={{ zIndex: 10 }}>Lifestyle Scene</div>
             </div>
             <div className="card-info">
               <span className="card-num">01</span>
