@@ -82,12 +82,14 @@ function ModelMesh({
   scale,
   autoRotateSpeed,
   material,
+  isShoe,
 }: {
   clonedScene: Group;
   animations: any;
   scale: number;
   autoRotateSpeed: number;
   material: "original" | "glass" | "iridescent";
+  isShoe?: boolean;
 }) {
   const outerRef = useRef<Group>(null);
   const modelRef = useRef<Group>(null);
@@ -122,6 +124,12 @@ function ModelMesh({
       }
     });
   }, [clonedScene, material]);
+
+  useLayoutEffect(() => {
+    if (outerRef.current) {
+      outerRef.current.rotation.y = isShoe ? Math.PI / 2 : 0;
+    }
+  }, [isShoe]);
 
   useFrame((_, delta) => {
     if (outerRef.current && autoRotateSpeed > 0) {
@@ -190,6 +198,8 @@ function ScaledModel({
   material: "original" | "glass" | "iridescent";
 }) {
   const { scene, animations } = useGLTF(modelPath);
+  const isShoe = modelPath.includes("canvas_shoe.glb");
+  const adjustedTargetSize = isShoe ? targetSize * 1.2 : targetSize;
 
   // Compute scale based on a clean, cloned scene to ensure no dirty matrices or parent transformations affect it.
   const scale = useMemo(() => {
@@ -197,8 +207,8 @@ function ScaledModel({
     const box = new Box3().setFromObject(clone);
     const size = box.getSize(new Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    return maxDim > 0 ? targetSize / maxDim : 1;
-  }, [scene, targetSize]);
+    return maxDim > 0 ? adjustedTargetSize / maxDim : 1;
+  }, [scene, adjustedTargetSize]);
 
   // Clone the scene for rendering and material manipulation to keep the cached scene pristine
   const clonedScene = useMemo(() => {
@@ -215,6 +225,7 @@ function ScaledModel({
           scale={scale}
           autoRotateSpeed={autoRotateSpeed}
           material={material}
+          isShoe={isShoe}
         />
       ) : (
         <ProceduralMesh

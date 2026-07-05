@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, useRef } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import Image from "next/image";
 
@@ -241,6 +241,61 @@ function ImageSlider({ leftImage, rightImage, leftLabel = "CAD", rightLabel = "R
   );
 }
 
+// ── Lifestyle Slideshow ──────────────────────────────────────
+
+function LifestyleSlideshow() {
+  const images = [
+    "/Lifestyle images/Lifestyle image 01.jpg",
+    "/Lifestyle images/Lifestyle image 02.jpg",
+    "/Lifestyle images/Liffestyle image 03.jpg",
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 4000); // changes every 4 seconds
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
+      {images.map((src, index) => {
+        const isActive = index === currentIndex;
+        return (
+          <div
+            key={src}
+            className="absolute inset-0 w-full h-full transition-all duration-[1200ms] ease-in-out"
+            style={{
+              opacity: isActive ? 1 : 0,
+              transform: isActive ? "scale(1.05)" : "scale(1.0)",
+              zIndex: isActive ? 2 : 1,
+            }}
+          >
+            <img
+              src={src}
+              alt={`Lifestyle scene ${index + 1}`}
+              className="w-full h-full object-cover pointer-events-none"
+            />
+          </div>
+        );
+      })}
+      
+      {/* Soft indicator dots at the bottom right */}
+      <div className="absolute bottom-3 right-3 flex gap-1.5 z-[10] bg-black/45 backdrop-blur-[2px] px-2 py-1 rounded-full border border-white/5">
+        {images.map((_, index) => (
+          <div
+            key={index}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+              index === currentIndex ? "bg-white scale-110" : "bg-white/40"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── FeatureSections Component ───────────────────────────────
 
 export function FeatureSections() {
@@ -261,12 +316,8 @@ export function FeatureSections() {
           {/* Card 1: Lifestyle Rendering (large) */}
           <div className="bento-card bento-card--large">
             <div className="card-visual relative" style={{ minHeight: "260px" }}>
-              <img
-                src="/Lifestyle images/Lifestyle image 01.jpg"
-                alt="Lifestyle rendering scene"
-                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-              />
-              <div className="visual-badge" style={{ zIndex: 10 }}>Lifestyle Scene</div>
+              <LifestyleSlideshow />
+              <div className="visual-badge" style={{ zIndex: 10 }}>Lifestyle Showcase</div>
             </div>
             <div className="card-info">
               <span className="card-num">01</span>

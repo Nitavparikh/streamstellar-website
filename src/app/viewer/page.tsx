@@ -5,6 +5,10 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Center, Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
+import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader.js";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { Navbar } from "@/components/Navbar";
 
 // Premium Custom Shaders/Materials matching the StreamStellar design system
@@ -284,71 +288,109 @@ export default function GLBViewerPage() {
     setGltf(null);
     setTelemetry(null);
 
+    const ext = file.name.split(".").pop()?.toLowerCase();
     const url = URL.createObjectURL(file);
-    const loader = new GLTFLoader();
 
-    loader.load(
-      url,
-      (loadedGltf) => {
-        let vertices = 0;
-        let polygons = 0;
-        let meshes = 0;
+    let loader: any;
+    if (ext === "obj") {
+      loader = new OBJLoader();
+    } else if (ext === "fbx") {
+      loader = new FBXLoader();
+    } else if (ext === "stl") {
+      loader = new STLLoader();
+    } else if (ext === "ply") {
+      loader = new PLYLoader();
+    } else {
+      loader = new GLTFLoader();
+    }
 
-        loadedGltf.scene.traverse((child: any) => {
-          if (child.isMesh) {
-            meshes++;
-            const geometry = child.geometry;
-            if (geometry) {
-              const position = geometry.attributes.position;
-              if (position) {
-                vertices += position.count;
-                if (geometry.index) {
-                  polygons += geometry.index.count / 3;
-                } else {
-                  polygons += position.count / 3;
-                }
+    const handleLoad = (loadedData: any) => {
+      let loadedScene: THREE.Group;
+      let animations: any[] = [];
+
+      if (ext === "obj" || ext === "fbx") {
+        loadedScene = loadedData;
+        animations = loadedData.animations || [];
+      } else if (ext === "stl" || ext === "ply") {
+        const material = new THREE.MeshPhysicalMaterial({
+          color: 0xe4e4e7,
+          roughness: 0.4,
+          metalness: 0.1,
+          clearcoat: 0.3,
+        });
+        const mesh = new THREE.Mesh(loadedData, material);
+        loadedScene = new THREE.Group();
+        loadedScene.add(mesh);
+      } else {
+        loadedScene = loadedData.scene;
+        animations = loadedData.animations || [];
+      }
+
+      let vertices = 0;
+      let polygons = 0;
+      let meshes = 0;
+
+      loadedScene.traverse((child: any) => {
+        if (child.isMesh) {
+          meshes++;
+          const geometry = child.geometry;
+          if (geometry) {
+            const position = geometry.attributes.position;
+            if (position) {
+              vertices += position.count;
+              if (geometry.index) {
+                polygons += geometry.index.count / 3;
+              } else {
+                polygons += position.count / 3;
               }
             }
           }
-        });
-
-        setTelemetry({
-          name: file.name,
-          size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
-          vertices: vertices.toLocaleString(),
-          polygons: Math.round(polygons).toLocaleString(),
-          meshes,
-          animationsCount: loadedGltf.animations?.length || 0,
-        });
-
-        setGltf(loadedGltf);
-        setFile(file);
-        setLoading(false);
-
-        // Select first animation if any
-        if (loadedGltf.animations && loadedGltf.animations.length > 0) {
-          setActiveAnimIndex(0);
-          setAnimPlaying(true);
-        } else {
-          setActiveAnimIndex(-1);
-          setAnimPlaying(false);
         }
-      },
-      (xhr) => {
-        if (xhr.total > 0) {
-          const percent = Math.round((xhr.loaded / xhr.total) * 100);
-          setProgress(percent);
-        } else {
-          // Fallback loader simulator
-          setProgress((prev) => Math.min(prev + 8, 98));
-        }
-      },
-      (err) => {
-        console.error(err);
-        setError("Failed to parse the file. Ensure it is a valid binary glTF (.glb) asset.");
-        setLoading(false);
+      });
+
+      const mockedGltf = {
+        scene: loadedScene,
+        animations,
+      };
+
+      setTelemetry({
+        name: file.name,
+        size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+        vertices: vertices.toLocaleString(),
+        polygons: Math.round(polygons).toLocaleString(),
+        meshes,
+        animationsCount: animations.length,
+      });
+
+      setGltf(mockedGltf);
+      setFile(file);
+      setLoading(false);
+
+      if (animations.length > 0) {
+        setActiveAnimIndex(0);
+        setAnimPlaying(true);
+      } else {
+        setActiveAnimIndex(-1);
+        setAnimPlaying(false);
       }
-    );
+    };
+
+    const handleProgress = (xhr: any) => {
+      if (xhr.total > 0) {
+        const percent = Math.round((xhr.loaded / xhr.total) * 100);
+        setProgress(percent);
+      } else {
+        setProgress((prev) => Math.min(prev + 8, 98));
+      }
+    };
+
+    const handleError = (err: any) => {
+      console.error(err);
+      setError(`Failed to parse the file. Ensure it is a valid .${ext} asset.`);
+      setLoading(false);
+    };
+
+    loader.load(url, handleLoad, handleProgress, handleError);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -373,10 +415,10 @@ export default function GLBViewerPage() {
     const dropped = e.dataTransfer.files?.[0];
     if (dropped) {
       const ext = dropped.name.split(".").pop()?.toLowerCase();
-      if (ext === "glb" || ext === "gltf") {
+      if (ext === "glb" || ext === "gltf" || ext === "obj" || ext === "stl" || ext === "ply" || ext === "fbx") {
         loadModelFile(dropped);
       } else {
-        setError("Unsupported file format. Please drop a self-contained .glb or .gltf file.");
+        setError("Unsupported file format. Please drop a self-contained .glb, .gltf, .obj, .stl, .ply, or .fbx file.");
       }
     }
   };
@@ -448,7 +490,7 @@ export default function GLBViewerPage() {
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept=".glb,.gltf"
+                  accept=".glb,.gltf,.obj,.stl,.ply,.fbx"
                   className="hidden"
                 />
 
@@ -461,10 +503,10 @@ export default function GLBViewerPage() {
 
                 <div>
                   <p className="text-base font-medium text-white">
-                    Drag & drop your <span className="text-violet-400">.glb</span> / <span className="text-violet-400">.gltf</span> file here
+                    Drag & drop your <span className="text-violet-400">.glb</span> / <span className="text-violet-400">.gltf</span> / <span className="text-violet-400">.obj</span> / <span className="text-violet-400">.stl</span> / <span className="text-violet-400">.ply</span> / <span className="text-violet-400">.fbx</span> file here
                   </p>
                   <p className="text-xs text-zinc-500 mt-2">
-                    Accepts standalone binary GLB and self-contained glTF files.
+                    Accepts standalone GLB, glTF, OBJ, STL, PLY, and FBX files.
                   </p>
                 </div>
 

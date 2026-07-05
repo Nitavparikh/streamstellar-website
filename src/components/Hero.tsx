@@ -32,14 +32,39 @@ export function Hero() {
             <a href="#services" className="btn-secondary">Explore Services</a>
           </div>
 
-          {/* FLOATING INTERACTIVE DESIGN PANEL (INTEGRATED UNDER TEXT) */}
-          <div className="floating-panel floating-panel--editor" id="editorPanel">
+
+        </div>
+
+        {/* RIGHT COLUMN: 3D CANVAS & CONFIGURATOR */}
+        <div className="hero-visual" style={{ position: "relative", flexDirection: "column", gap: "28px" }}>
+          {/* Subtle soft glowing background light trails behind the 3D Viewer */}
+          <div 
+            className="pointer-events-none absolute w-[650px] h-[650px] rounded-full" 
+            style={{ 
+              zIndex: 0, 
+              top: "50%", 
+              left: "50%", 
+              transform: "translate(-50%, -50%)", 
+              background: "radial-gradient(circle, rgba(139, 92, 246, 0.09) 0%, rgba(6, 182, 212, 0.04) 50%, transparent 70%)", 
+              filter: "blur(80px)" 
+            }} 
+          />
+          <div className="hero-canvas-frame" style={{ zIndex: 1 }}>
+            <ProductViewer
+              className="w-full h-full"
+              autoRotateSpeed={0.18}
+              targetSize={2.1}
+              geometry={geometry}
+              material={material}
+              lighting={lighting}
+            />
+          </div>
+
+          {/* FLOATING INTERACTIVE DESIGN PANEL (MOVED TO RIGHT COLUMN) */}
+          <div className="floating-panel floating-panel--editor" id="editorPanel" style={{ marginTop: 0, zIndex: 1 }}>
             <div className="panel-header">
               <span className="panel-dot"></span>
-              <span className="panel-title">SCENE_INSPECTOR</span>
-              <span className="value-mono font-mono text-[9px] text-zinc-500 ml-auto mr-1">
-                {polyCounts[geometry]} POLY
-              </span>
+              <span className="panel-title">3D CONFIGURATOR</span>
             </div>
             <div className="panel-content">
               <div className="control-group">
@@ -97,32 +122,6 @@ export function Hero() {
               </div>
 
             </div>
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN: 3D CANVAS & MONITOR */}
-        <div className="hero-visual" style={{ position: "relative" }}>
-          {/* Subtle soft glowing background light trails behind the 3D Viewer */}
-          <div 
-            className="pointer-events-none absolute w-[650px] h-[650px] rounded-full" 
-            style={{ 
-              zIndex: 0, 
-              top: "50%", 
-              left: "50%", 
-              transform: "translate(-50%, -50%)", 
-              background: "radial-gradient(circle, rgba(139, 92, 246, 0.09) 0%, rgba(6, 182, 212, 0.04) 50%, transparent 70%)", 
-              filter: "blur(80px)" 
-            }} 
-          />
-          <div className="hero-canvas-frame" style={{ zIndex: 1 }}>
-            <ProductViewer
-              className="w-full h-full"
-              autoRotateSpeed={0.18}
-              targetSize={2.1}
-              geometry={geometry}
-              material={material}
-              lighting={lighting}
-            />
           </div>
         </div>
       </div>
