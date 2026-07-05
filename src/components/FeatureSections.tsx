@@ -248,6 +248,9 @@ function LifestyleSlideshow() {
     "/Lifestyle images/Lifestyle image 01.jpg",
     "/Lifestyle images/Lifestyle image 02.jpg",
     "/Lifestyle images/Liffestyle image 03.jpg",
+    "/Lifestyle images/LIfestyle image 04.jpg",
+    "/Lifestyle images/LIfestyle image 05.jpg",
+    "/Lifestyle images/Lifestyle image 06.jpg",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -198,7 +198,7 @@ function ModelRenderer({
 
       <Center>
         <group ref={outerGroupRef} scale={scale}>
-          <primitive object={gltf.scene} />
+          {gltf?.scene && <primitive object={gltf.scene} />}
         </group>
       </Center>
 
@@ -289,6 +289,99 @@ export default function GLBViewerPage() {
     setTelemetry(null);
 
     const ext = file.name.split(".").pop()?.toLowerCase();
+
+    if (ext === "splat") {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const arrayBuffer = e.target?.result as ArrayBuffer;
+        if (!arrayBuffer) {
+          setError("Failed to read the splat file.");
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const rowLength = 32;
+          const numSplats = Math.floor(arrayBuffer.byteLength / rowLength);
+
+          const positions = new Float32Array(numSplats * 3);
+          const colors = new Float32Array(numSplats * 3);
+
+          const floatData = new Float32Array(arrayBuffer);
+          const uint8Data = new Uint8Array(arrayBuffer);
+
+          for (let i = 0; i < numSplats; i++) {
+            const fOffset = i * 8;
+            const uOffset = i * 32;
+
+            positions[i * 3 + 0] = floatData[fOffset + 0];
+            positions[i * 3 + 1] = floatData[fOffset + 1];
+            positions[i * 3 + 2] = floatData[fOffset + 2];
+
+            colors[i * 3 + 0] = uint8Data[uOffset + 24] / 255;
+            colors[i * 3 + 1] = uint8Data[uOffset + 25] / 255;
+            colors[i * 3 + 2] = uint8Data[uOffset + 26] / 255;
+          }
+
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+          geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+          const material = new THREE.PointsMaterial({
+            size: 0.025,
+            vertexColors: true,
+            sizeAttenuation: true,
+            transparent: true,
+            opacity: 0.85,
+            depthWrite: false,
+            blending: THREE.NormalBlending,
+          });
+
+          const points = new THREE.Points(geometry, material);
+          const loadedScene = new THREE.Group();
+          loadedScene.add(points);
+
+          const mockedGltf = {
+            scene: loadedScene,
+            animations: [],
+          };
+
+          setTelemetry({
+            name: file.name,
+            size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+            vertices: numSplats.toLocaleString(),
+            polygons: "0 (Point Cloud)",
+            meshes: 1,
+            animationsCount: 0,
+          });
+
+          setGltf(mockedGltf);
+          setFile(file);
+          setLoading(false);
+          setActiveAnimIndex(-1);
+          setAnimPlaying(false);
+        } catch (err) {
+          console.error(err);
+          setError("Failed to parse the splat file. Ensure it is a valid 3D Gaussian Splatting asset.");
+          setLoading(false);
+        }
+      };
+
+      reader.onprogress = (e) => {
+        if (e.total > 0) {
+          setProgress(Math.round((e.loaded / e.total) * 100));
+        }
+      };
+
+      reader.onerror = () => {
+        setError("Failed to read the file.");
+        setLoading(false);
+      };
+
+      reader.readAsArrayBuffer(file);
+      return;
+    }
+
     const url = URL.createObjectURL(file);
 
     let loader: any;
@@ -400,25 +493,39 @@ export default function GLBViewerPage() {
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const dragCounter = useRef(0);
+
+  const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
+    dragCounter.current++;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
+    }
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current--;
+    if (dragCounter.current === 0) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    dragCounter.current = 0;
     const dropped = e.dataTransfer.files?.[0];
     if (dropped) {
       const ext = dropped.name.split(".").pop()?.toLowerCase();
-      if (ext === "glb" || ext === "gltf" || ext === "obj" || ext === "stl" || ext === "ply" || ext === "fbx") {
+      if (ext === "glb" || ext === "gltf" || ext === "obj" || ext === "stl" || ext === "ply" || ext === "fbx" || ext === "splat") {
         loadModelFile(dropped);
       } else {
-        setError("Unsupported file format. Please drop a self-contained .glb, .gltf, .obj, .stl, .ply, or .fbx file.");
+        setError("Unsupported file format. Please drop a self-contained .glb, .gltf, .obj, .stl, .ply, .fbx, or .splat file.");
       }
     }
   };
@@ -444,11 +551,34 @@ export default function GLBViewerPage() {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen bg-black text-white flex flex-col font-sans">
+    <div 
+      className="relative min-h-screen bg-black text-white flex flex-col font-sans"
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <Navbar />
 
-      {/* Main workspace container */}
-      <main className="flex-1 flex flex-col md:flex-row relative pt-[72px] h-screen overflow-hidden">
+      {/* Full-Screen Glassmorphic Drag Overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 bg-zinc-950/85 border-4 border-dashed border-violet-500/80 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-[9999] pointer-events-none animate-fade-in">
+          <div className="w-20 h-20 rounded-2xl bg-zinc-900/90 border border-violet-500 flex items-center justify-center text-violet-400 shadow-2xl animate-bounce">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l-6.75-6.75M12 19.5l6.75-6.75" />
+            </svg>
+          </div>
+          <p className="text-xl font-bold font-display text-white tracking-wide">
+            Drop your 3D model anywhere to load!
+          </p>
+          <p className="text-sm text-zinc-400">
+            Supports GLB, glTF, OBJ, STL, PLY, FBX, and SPLAT.
+          </p>
+        </div>
+      )}
+
+      {/* Main workspace container (pt-[96px] pushes the workspace fully underneath the floating navbar) */}
+      <main className="flex-1 flex flex-col md:flex-row relative pt-[96px] h-screen overflow-hidden">
         {file === null ? (
           /* INGESTION CHAMBER / UPLOADER DROPZONE */
           <div className="flex-1 flex flex-col items-center justify-center p-6 relative">
@@ -476,21 +606,14 @@ export default function GLBViewerPage() {
 
               {/* Box drop zone */}
               <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`relative group cursor-pointer border border-dashed rounded-[24px] p-12 flex flex-col items-center gap-5 transition-all duration-300 ${
-                  isDragging
-                    ? "border-violet-500 bg-violet-950/10 shadow-[0_0_40px_rgba(139,92,246,0.2)]"
-                    : "border-zinc-800 bg-zinc-950/20 hover:border-zinc-700 hover:bg-zinc-900/10"
-                }`}
+                className="relative group cursor-pointer border border-dashed border-zinc-800 bg-zinc-950/20 hover:border-zinc-700 hover:bg-zinc-900/10 rounded-[24px] p-12 flex flex-col items-center gap-5 transition-all duration-300"
               >
                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept=".glb,.gltf,.obj,.stl,.ply,.fbx"
+                  accept=".glb,.gltf,.obj,.stl,.ply,.fbx,.splat"
                   className="hidden"
                 />
 
@@ -503,10 +626,10 @@ export default function GLBViewerPage() {
 
                 <div>
                   <p className="text-base font-medium text-white">
-                    Drag & drop your <span className="text-violet-400">.glb</span> / <span className="text-violet-400">.gltf</span> / <span className="text-violet-400">.obj</span> / <span className="text-violet-400">.stl</span> / <span className="text-violet-400">.ply</span> / <span className="text-violet-400">.fbx</span> file here
+                    Drag & drop your <span className="text-violet-400">.glb</span> / <span className="text-violet-400">.gltf</span> / <span className="text-violet-400">.obj</span> / <span className="text-violet-400">.stl</span> / <span className="text-violet-400">.ply</span> / <span className="text-violet-400">.fbx</span> / <span className="text-violet-400">.splat</span> file here
                   </p>
                   <p className="text-xs text-zinc-500 mt-2">
-                    Accepts standalone GLB, glTF, OBJ, STL, PLY, and FBX files.
+                    Accepts standalone GLB, glTF, OBJ, STL, PLY, FBX, and SPLAT files.
                   </p>
                 </div>
 
