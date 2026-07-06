@@ -36,7 +36,6 @@ export function IntegrateSection() {
     <section className="pipeline-section" id="pipeline">
       <div className="section-inner">
         <div className="section-header-centered">
-          <span className="eyebrow">Our Workflow</span>
           <h2 className="section-heading">How We Build 3D for Web</h2>
           <p className="section-body">
             We take raw assets and design details, refining them into responsive interactive media.

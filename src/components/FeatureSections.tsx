@@ -308,7 +308,6 @@ export function FeatureSections() {
     <section className="services-section" id="services">
       <div className="section-inner">
         <div className="section-header-centered">
-          <span className="eyebrow">Studio Capabilities</span>
           <h2 className="section-heading">Services we do.</h2>
           <p className="section-body">
             We replace expensive photography and heavy plugins with responsive, web-native 3D assets.

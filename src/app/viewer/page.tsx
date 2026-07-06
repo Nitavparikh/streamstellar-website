@@ -479,8 +479,53 @@ export default function GLBViewerPage() {
 
     const handleError = (err: any) => {
       console.error(err);
-      setError(`Failed to parse the file. Ensure it is a valid .${ext} asset.`);
-      setLoading(false);
+      if (ext === "fbx") {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const buffer = e.target?.result as ArrayBuffer;
+          if (buffer) {
+            const view = new DataView(buffer);
+            let isBinary = false;
+            let version = 0;
+
+            if (buffer.byteLength >= 27) {
+              const magic = new Uint8Array(buffer, 0, 18);
+              const magicStr = Array.from(magic).map(c => String.fromCharCode(c)).join("");
+              if (magicStr === "Kaydara FBX Binary") {
+                isBinary = true;
+                version = view.getUint32(23, true);
+              }
+            }
+
+            if (isBinary) {
+              if (version < 6400) {
+                setError(`Legacy FBX Binary (Version ${version}) is not supported. Please export as FBX 7.x Binary or convert to GLB.`);
+              } else {
+                setError(`Failed to parse FBX Binary (Version ${version}). The file may contain custom property types unsupported by WebGL. We recommend converting it to GLB.`);
+              }
+            } else {
+              const text = new TextDecoder().decode(new Uint8Array(buffer, 0, Math.min(buffer.byteLength, 1000)));
+              const isAscii = text.toLowerCase().includes("fbx") || text.startsWith(";");
+              if (isAscii) {
+                setError("FBX ASCII format is incompatible with web loaders. Please export as FBX Binary or convert to GLB.");
+              } else {
+                setError("Failed to parse the file. Ensure it is a valid FBX asset.");
+              }
+            }
+          } else {
+            setError("Failed to parse the file. Ensure it is a valid FBX asset.");
+          }
+          setLoading(false);
+        };
+        reader.onerror = () => {
+          setError(`Failed to parse the file. Ensure it is a valid .${ext} asset.`);
+          setLoading(false);
+        };
+        reader.readAsArrayBuffer(file.slice(0, 1000));
+      } else {
+        setError(`Failed to parse the file. Ensure it is a valid .${ext} asset.`);
+        setLoading(false);
+      }
     };
 
     loader.load(url, handleLoad, handleProgress, handleError);
