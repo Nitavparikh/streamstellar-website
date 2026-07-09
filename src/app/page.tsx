@@ -1,5 +1,6 @@
 import { Deliverability } from "@/components/Deliverability";
 import { FeatureSections } from "@/components/FeatureSections";
+import { EfficiencySection } from "@/components/EfficiencySection";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
@@ -17,6 +18,7 @@ export default function Home() {
         <LogoCloud />
         <IntegrateSection />
         <FeatureSections />
+        <EfficiencySection />
         <ViewerPreviewSection />
         <Deliverability />
         <FinalCta />

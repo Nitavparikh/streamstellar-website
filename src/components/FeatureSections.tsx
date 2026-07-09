@@ -260,9 +260,9 @@ export function FeatureSections() {
         </div>
 
         <div className="bento-grid">
-          {/* Card 1: Lifestyle Rendering (widen to full width) */}
-          <div className="bento-card" style={{ gridColumn: "1 / -1" }}>
-            <div className="card-visual relative" style={{ minHeight: "360px", aspectRatio: "2.4" }}>
+          {/* Card 1: Lifestyle Rendering (widen with side-by-side layout) */}
+          <div className="bento-card bento-card--horizontal">
+            <div className="card-visual relative">
               <LifestyleSlideshow />
             </div>
             <div className="card-info">

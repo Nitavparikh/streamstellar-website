@@ -972,6 +972,30 @@ input, textarea {
   grid-column: span 1;
 }
 
+.bento-card--horizontal {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .bento-card--horizontal {
+    flex-direction: row;
+  }
+  .bento-card--horizontal .card-visual {
+    width: 60%;
+    aspect-ratio: auto;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    min-height: 380px;
+  }
+  .bento-card--horizontal .card-info {
+    width: 40%;
+    justify-content: center;
+  }
+}
+
+
 /* Card structures */
 .card-visual {
   position: relative;
