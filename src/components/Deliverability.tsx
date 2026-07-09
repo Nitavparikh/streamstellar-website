@@ -24,13 +24,6 @@ export function Deliverability() {
     <section className="specs-section" id="specs">
       <div className="section-inner">
         <div className="specs-panel">
-          <div className="specs-intro">
-            <span className="eyebrow">Technical Architecture</span>
-            <h2 className="specs-title">Engineered for Performance</h2>
-            <p className="specs-desc">
-              StreamStellar assets are designed to run smoothly at 60 FPS on standard mobile and desktop configurations. Built using industry-standard 3D workflows and open ecosystem technologies. Members of Metaverse Standards.
-            </p>
-          </div>
           <div className="specs-grid">
             {specs.map((spec) => (
               <div key={spec.metric} className="spec-card">
@@ -38,6 +31,12 @@ export function Deliverability() {
                 <span className="spec-label">{spec.label}</span>
               </div>
             ))}
+          </div>
+          <div className="specs-intro">
+            <h2 className="specs-title">Engineered for Performance</h2>
+            <p className="specs-desc">
+              StreamStellar assets are designed to run smoothly at 60 FPS on standard mobile and desktop configurations. Built using industry-standard 3D workflows and open ecosystem technologies. Members of Metaverse Standards.
+            </p>
           </div>
         </div>
       </div>

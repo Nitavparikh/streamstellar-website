@@ -18,13 +18,7 @@ function DigitalTwinCanvas() {
 
   return (
     <div className="relative w-full h-full select-none" style={{ touchAction: "none" }}>
-      {/* Side labels */}
-      <div style={{ position: "absolute", top: 8, left: 10, zIndex: 5, pointerEvents: "none" }}>
-        <span style={{ fontSize: 8, color: "#a855f7", letterSpacing: "0.12em", textTransform: "uppercase", textShadow: "0 0 8px rgba(168,85,247,0.8)" }}>◄ Wireframe</span>
-      </div>
-      <div style={{ position: "absolute", top: 8, right: 10, zIndex: 5, pointerEvents: "none" }}>
-        <span style={{ fontSize: 8, color: "#06b6d4", letterSpacing: "0.12em", textTransform: "uppercase", textShadow: "0 0 8px rgba(6,182,212,0.8)" }}>PBR Render ►</span>
-      </div>
+
 
       <Canvas
         gl={{ antialias: true, alpha: true, localClippingEnabled: true, powerPreference: "high-performance" }}

@@ -20,7 +20,6 @@ export function ViewerPreviewSection() {
           
           {/* Left Column: Creative copy & CTA */}
           <div className="flex-1 text-left">
-            <span className="eyebrow">Interactive 3D Previewer</span>
             <h2 className="section-heading mt-2 mb-6" style={{ maxWidth: "500px", lineHeight: "1.15" }}>
               Want to roam around your digital twins and see how they look?
             </h2>
