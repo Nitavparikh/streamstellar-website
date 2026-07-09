@@ -1,6 +1,7 @@
 import { Deliverability } from "@/components/Deliverability";
 import { FeatureSections } from "@/components/FeatureSections";
 import { EfficiencySection } from "@/components/EfficiencySection";
+import { ViewerPreviewSection } from "@/components/ViewerPreviewSection";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
@@ -18,6 +19,7 @@ export default function Home() {
         <IntegrateSection />
         <FeatureSections />
         <EfficiencySection />
+        <ViewerPreviewSection />
         <Deliverability />
         <FinalCta />
       </main>
