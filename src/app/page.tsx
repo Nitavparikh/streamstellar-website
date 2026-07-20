@@ -9,6 +9,8 @@ import { IntegrateSection } from "@/components/IntegrateSection";
 import { LogoCloud } from "@/components/LogoCloud";
 import { Navbar } from "@/components/Navbar";
 
+import { Testimonials } from "@/components/Testimonials";
+
 export default function Home() {
   return (
     <div className="relative bg-black min-h-screen text-white selection:bg-violet-500/20 selection:text-white">
@@ -21,6 +23,7 @@ export default function Home() {
         <EfficiencySection />
         <ViewerPreviewSection />
         <Deliverability />
+        <Testimonials />
         <FinalCta />
       </main>
       <Footer />

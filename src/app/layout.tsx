@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import { Inter, Outfit, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const inter = Outfit({
+const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const outfit = Inter({
+const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const instrumentSerif = Instrument_Serif({
