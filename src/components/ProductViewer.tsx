@@ -132,7 +132,7 @@ function ModelMesh({
   }, [isShoe]);
 
   useFrame((_, delta) => {
-    if (outerRef.current && autoRotateSpeed > 0) {
+    if (outerRef.current && autoRotateSpeed > 0 && !isShoe) {
       outerRef.current.rotation.y += delta * autoRotateSpeed;
     }
   });
